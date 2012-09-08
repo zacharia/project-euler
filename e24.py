@@ -10,8 +10,11 @@ digits = "0123456789"
 
 #the index of the desired permutation
 target_number = 1000000
+#target_number = 4
 
-#this returns all lexocigraphical (or however it's spelt) permutations of the digits given in sorted order. Assumes all the characters in the argument are unique
+#this returns all lexocigraphical (or however it's spelt) permutations
+#of the digits given in sorted order. Assumes all the characters in
+#the argument are unique
 def permute(digits):
     
     if len(digits) == 1:
@@ -63,5 +66,36 @@ def get_nth_perm(digits, n):
         # and take the Nth.
         return perms[n-1]
 
+#a faster method to compute the desired permutation without iterating
+#through all the possibilities. It generates the permutation directly.
+def fast_nth_perm(digits, n):
+
+    #temporary storage variables
+    curr_num = n - 1
+    result = ""
+
+    #go through the digits from the biggest down (i.e. 9 to 0)
+    for i in reversed(range(len(digits))):
+        #do integer division to get the quotient of curr_num / i!
+        quotient = curr_num / math.factorial(int(i))
+        #also get the remainder with mod
+        remainder = curr_num % math.factorial(int(i))
+
+        #the quotient is the index of the current digit in the desired
+        #permutation. Add it to the result.
+        result += (digits[quotient])
+        # and remove it from the list of digits (each digit can only
+        # appear once)
+        digits = "%s%s" % (digits[:quotient], digits[quotient+1:])
+
+        #update curr num to be the remainder of the previous
+        #curr_num's division.
+        curr_num = remainder
+        
+    return result
+
 # call the method to get our answer
-print get_nth_perm(digits, target_number)
+#print get_nth_perm(digits, target_number)
+
+#the faster algorithm
+print fast_nth_perm(digits, target_number)
